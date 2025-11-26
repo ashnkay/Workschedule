@@ -1,9 +1,15 @@
 {
-  "name": "Kayla's Work Schedule",
+  "name": "Work Schedule",
   "short_name": "Schedule",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0b0b0b",
-  "theme_color": "#ffc6de",
-  "icons": []
+  "background_color": "#000000",
+  "theme_color": "#ffb6d5",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
