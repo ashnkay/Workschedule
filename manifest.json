@@ -1,4 +1,4 @@
-231"}
+235"}
 {
   "name": "Work Schedule",
   "short_name": "Schedule",
@@ -8,13 +8,5 @@
   "background_color": "#000000",
   "theme_color": "#ffb6c1",
   "icons": [
-    {
-      "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png" }
