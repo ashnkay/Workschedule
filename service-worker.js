@@ -1,3 +1,4 @@
+85232"}
 const CACHE_NAME = "work-schedule-cache-v1";
 const urlsToCache = [
   "/",
@@ -18,5 +19,3 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
     })
-  );
-});
