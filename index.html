@@ -3,111 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kayla's Page</title>
+  <title>Work Schedule</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
   <style>
     body {
       margin: 0;
       font-family: 'Baloo 2', cursive;
-      background: #fce4ec;
-      color: #333;
+      background: linear-gradient(135deg, #000000, #555555);
+      color: #ffb6c1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     header {
-      text-align: center;
-      padding: 2rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(0,0,0,0.6);
+      position: relative;
+    }
+    header img.logo {
+      height: 50px;
+      position: absolute;
+      left: 1rem;
     }
     header h1 {
-      font-size: 2.5rem;
       margin: 0;
+      font-size: 2rem;
+      text-align: center;
+      color: #ffb6c1;
     }
     main {
+      flex: 1;
       padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 1.5rem;
-      width: 100%;
-      max-width: 1200px;
     }
-    .gallery-item {
-      position: relative;
-      cursor: pointer;
-    }
-    .gallery-item img, .gallery-item video {
-      width: 100%;
+    .day-card {
+      background: rgba(255, 182, 193, 0.1);
+      border: 1px solid #ffb6c1;
       border-radius: 12px;
-      transition: transform 0.3s ease;
-    }
-    .gallery-item img:hover, .gallery-item video:hover {
-      transform: scale(1.05);
-    }
-    .caption {
+      padding: 1rem;
       text-align: center;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      color: #555;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .day-card h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+      color: #ffb6c1;
+    }
+    .day-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #ffb6c1;
     }
     footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #f8bbd0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 1rem;
+      text-align: center;
+      background: rgba(0,0,0,0.6);
+      color: #ffb6c1;
+    }
+    button {
+      background: #ffb6c1;
+      color: #000;
+      border: none;
       padding: 0.5rem 1rem;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+      font-weight: bold;
+      transition: transform 0.2s;
+      margin-top: 0.5rem;
     }
-    footer .logo {
-      height: 40px;
-    }
-    footer .credits {
-      font-size: 0.8rem;
-      color: #444;
+    button:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Kayla's Art Gallery</h1>
-    <p class="credits">Credit to ArtWithFlo</p>
+    <img src="logo.png" alt="App Logo" class="logo">
+    <h1>Work Schedule</h1>
   </header>
-
-  <main>
-    <div class="gallery">
-      <!-- Example artwork items -->
-      <div class="gallery-item">
-        <img src="Art1.png" alt="Artwork 1">
-        <div class="caption">Artwork 1 caption <a href="#">link</a></div>
-      </div>
-      <div class="gallery-item">
-        <img src="Art2.png" alt="Artwork 2">
-        <div class="caption">Artwork 2 caption <a href="#">link</a></div>
-      </div>
-      <div class="gallery-item">
-        <video src="AnimatedArtwork.mp4" controls></video>
-        <div class="caption">Animated artwork caption <a href="#">link</a></div>
-      </div>
-      <div class="gallery-item">
-        <img src="Art3.png" alt="Artwork 3">
-        <div class="caption">Artwork 3 caption <a href="#">link</a></div>
-      </div>
-      <!-- Add more gallery items as needed -->
-    </div>
+  <main id="schedule">
+    <!-- Schedule cards will be populated by app.js -->
   </main>
-
   <footer>
-    <img src="logo.png" alt="Cute Logo" class="logo">
-    <div class="credits">© 2025 Kayla</div>
+    &copy; 2025 Kayla
   </footer>
-
-</body>
+  <script src="app.js"></script>
+  </body>
 </html>
+
