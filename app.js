@@ -42,6 +42,10 @@ daysOfWeek.forEach(day => {
   };
   container.appendChild(timeInput);
 
+  const reminderLabel = document.createElement("label");
+  reminderLabel.textContent = "Reminder (minutes before shift)";
+  container.appendChild(reminderLabel);
+
   const reminderInput = document.createElement("input");
   reminderInput.type = "number";
   reminderInput.min = 0;
@@ -52,10 +56,6 @@ daysOfWeek.forEach(day => {
   };
   container.appendChild(reminderInput);
 
-  const reminderLabel = document.createElement("label");
-  reminderLabel.textContent = "Reminder (minutes before shift)";
-  container.appendChild(reminderLabel);
-
   bottomRight.appendChild(container);
 });
 
@@ -64,7 +64,7 @@ if ("Notification" in window) {
   Notification.requestPermission();
 }
 
-// Function to send push notification
+// Send notification
 function sendNotification(day) {
   if(Notification.permission === "granted") {
     new Notification(`Shift Reminder`, {
@@ -85,7 +85,7 @@ setInterval(() => {
       shiftTime.setMinutes(minute - scheduleData[day].reminder);
       shiftTime.setSeconds(0);
       shiftTime.setMilliseconds(0);
-      if(Math.abs(now - shiftTime) < 60000) { // within 1 min
+      if(Math.abs(now - shiftTime) < 60000) {
         sendNotification(day);
       }
     }
