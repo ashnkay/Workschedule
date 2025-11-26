@@ -20,11 +20,9 @@ function buildWeeklyTemplate() {
 }
 buildWeeklyTemplate();
 
-// STORAGE
 let dynamicShifts = JSON.parse(localStorage.getItem("dynamicShifts") || "[]");
 let reminderMinutes = parseInt(localStorage.getItem("reminderMinutes") || "60");
 
-// WEEKLY TEMPLATE SAVE
 function saveWeeklyTemplate() {
   const schedule = {};
 
@@ -51,7 +49,6 @@ function loadWeeklyTemplate() {
   });
 }
 
-// DYNAMIC SHIFTS
 function addDynamicShift() {
   const date = document.getElementById("dynDate").value;
   const start = document.getElementById("dynStart").value;
@@ -78,7 +75,6 @@ function renderDynamic() {
 }
 renderDynamic();
 
-// REMINDER SETTINGS
 function updateReminder() {
   const value = parseInt(document.getElementById("reminderTime").value);
   reminderMinutes = value;
@@ -87,7 +83,6 @@ function updateReminder() {
   scheduleNotifications();
 }
 
-// NOTIFICATION PERMISSION
 async function requestNotifications() {
   if (Notification.permission !== "granted") {
     await Notification.requestPermission();
@@ -95,7 +90,6 @@ async function requestNotifications() {
 }
 requestNotifications();
 
-// SCHEDULING
 function scheduleNotifications() {
   if (Notification.permission !== "granted") return;
 
