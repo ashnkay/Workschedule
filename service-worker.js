@@ -1,12 +1,6 @@
-85232"}
+85236"}
 const CACHE_NAME = "work-schedule-cache-v1";
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/app.js",
-  "/manifest.json",
-  "/logo.png"
-];
+const urlsToCache = ["/","/index.html","/app.js","/manifest.json","/logo.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -16,6 +10,4 @@ self.addEventListener("install", event => {
 
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request).then(response => response || fetch(event.request))
