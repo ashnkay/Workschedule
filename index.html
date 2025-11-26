@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>My Work Schedule</title>
+
+  <!-- Quicksand font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="manifest" href="manifest.json">
+  <script defer src="app.js"></script>
+
+  <style>
+    body {
+      background: #000000;
+      font-family: "Quicksand", sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #ffffff;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .section {
+      background: #111111;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #333333;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #eaeaea;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 9px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #1c1c1c;
+      color: #ffffff;
+      font-family: "Quicksand", sans-serif;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      background: #5a4bfc;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: "Quicksand", sans-serif;
+    }
+
+    .shift-list { margin-top: 10px; }
+
+    .shift-item {
+      padding: 10px;
+      background: #1c1c1c;
+      border-radius: 8px;
+      border: 1px solid #333;
+      margin-top: 6px;
+      color: #ffffff;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Work Schedule</h1>
+
+  <!-- Weekly Template -->
+  <div class="section">
+    <h2>Weekly Template</h2>
+    <p style="text-align:center;color:#bbb;">Set your weekly recurring shifts.</p>
+    <div id="weeklyTemplate"></div>
+    <button onclick="saveWeeklyTemplate()">Save Weekly Schedule</button>
+  </div>
+
+  <!-- Dynamic -->
+  <div class="section">
+    <h2>One-Time Shift</h2>
+
+    <label>Date</label>
+    <input type="date" id="dynDate">
+
+    <label>Start Time</label>
+    <input type="time" id="dynStart">
+
+    <label>End Time</label>
+    <input type="time" id="dynEnd">
+
+    <button onclick="addDynamicShift()">Add Shift</button>
+
+    <div class="shift-list" id="dynamicList"></div>
+  </div>
+
+  <!-- Notification Settings -->
+  <div class="section">
+    <h2>Reminder Settings</h2>
+
+    <label>Minutes Before Shift</label>
+    <input id="reminderTime" type="number" value="60" min="5" max="1440">
+
+    <button onclick="updateReminder()">Save Reminder Time</button>
+  </div>
+
+</body>
+</html>
