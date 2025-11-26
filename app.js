@@ -1,53 +1,93 @@
-const scheduleData = {
-  Monday: ["9:00 AM – 5:00 PM", "Meeting 2 PM"],
-  Tuesday: ["10:00 AM – 6:00 PM"],
-  Wednesday: ["9:00 AM – 5:00 PM"],
-  Thursday: ["9:00 AM – 5:00 PM"],
-  Friday: ["9:00 AM – 3:00 PM"]
-};
+const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const topToggle = document.getElementById("top-toggle");
+const bottomRight = document.getElementById("bottom-right");
 
-const scheduleContainer = document.getElementById("schedule");
+// Load or initialize schedule
+let scheduleData = JSON.parse(localStorage.getItem("scheduleData")) || {};
+daysOfWeek.forEach(day => {
+  if (!scheduleData[day]) {
+    scheduleData[day] = { work: false, shift: "09:00", reminder: 60 };
+  }
+});
 
-function renderSchedule() {
-  scheduleContainer.innerHTML = "";
-  for (const day in scheduleData) {
-    const card = document.createElement("div");
-    card.classList.add("day-card");
+// Top horizontal toggles
+daysOfWeek.forEach(day => {
+  const div = document.createElement("div");
+  div.classList.add("day-box");
+  div.textContent = day;
+  if(scheduleData[day].work) div.classList.add("work");
+  div.onclick = () => {
+    scheduleData[day].work = !scheduleData[day].work;
+    div.classList.toggle("work");
+    localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
+  };
+  topToggle.appendChild(div);
+});
 
-    const dayTitle = document.createElement("h2");
-    dayTitle.textContent = day;
-    card.appendChild(dayTitle);
+// Bottom-right shift input list
+daysOfWeek.forEach(day => {
+  const container = document.createElement("div");
+  container.classList.add("shift-input");
 
-    const list = document.createElement("ul");
-    scheduleData[day].forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      list.appendChild(li);
+  const label = document.createElement("label");
+  label.textContent = `${day} shift:`;
+  container.appendChild(label);
+
+  const timeInput = document.createElement("input");
+  timeInput.type = "time";
+  timeInput.value = scheduleData[day].shift;
+  timeInput.onchange = () => {
+    scheduleData[day].shift = timeInput.value;
+    localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
+  };
+  container.appendChild(timeInput);
+
+  const reminderInput = document.createElement("input");
+  reminderInput.type = "number";
+  reminderInput.min = 0;
+  reminderInput.value = scheduleData[day].reminder;
+  reminderInput.onchange = () => {
+    scheduleData[day].reminder = parseInt(reminderInput.value);
+    localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
+  };
+  container.appendChild(reminderInput);
+
+  const reminderLabel = document.createElement("label");
+  reminderLabel.textContent = "Reminder (minutes before shift)";
+  container.appendChild(reminderLabel);
+
+  bottomRight.appendChild(container);
+});
+
+// Request Notification permission
+if ("Notification" in window) {
+  Notification.requestPermission();
+}
+
+// Function to send push notification
+function sendNotification(day) {
+  if(Notification.permission === "granted") {
+    new Notification(`Shift Reminder`, {
+      body: `Your ${day} shift starts in ${scheduleData[day].reminder} minutes!`,
+      icon: "logo.png"
     });
-    card.appendChild(list);
-
-    const addBtn = document.createElement("button");
-    addBtn.textContent = "Add Shift";
-    addBtn.onclick = () => {
-      const newShift = prompt(`Add a new shift for ${day}:`);
-      if (newShift) {
-        scheduleData[day].push(newShift);
-        renderSchedule();
-      }
-    };
-    card.appendChild(addBtn);
-
-    scheduleContainer.appendChild(card);
   }
 }
 
-renderSchedule();
-
-window.addEventListener("beforeunload", () => {
-  localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
-});
-const saved = localStorage.getItem("scheduleData");
-if (saved) {
-  Object.assign(scheduleData, JSON.parse(saved));
-  renderSchedule();
-}
+// Check reminders every minute
+setInterval(() => {
+  const now = new Date();
+  daysOfWeek.forEach(day => {
+    if(scheduleData[day].work) {
+      const [hour, minute] = scheduleData[day].shift.split(":").map(Number);
+      const shiftTime = new Date();
+      shiftTime.setHours(hour);
+      shiftTime.setMinutes(minute - scheduleData[day].reminder);
+      shiftTime.setSeconds(0);
+      shiftTime.setMilliseconds(0);
+      if(Math.abs(now - shiftTime) < 60000) { // within 1 min
+        sendNotification(day);
+      }
+    }
+  });
+}, 60000);
