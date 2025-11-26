@@ -1,104 +1,150 @@
-const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-function buildWeeklyTemplate() {
-  const container = document.getElementById("weeklyTemplate");
-  container.innerHTML = "";
+let schedule = JSON.parse(localStorage.getItem("kaylaSchedule")) || {
+  Sunday:{status:"Off",time:"",notify:60},
+  Monday:{status:"Work",time:"12pm - 5pm",notify:60},
+  Tuesday:{status:"Work",time:"6am - 12pm",notify:60},
+  Wednesday:{status:"Work",time:"10pm - 6am",notify:60},
+  Thursday:{status:"Off",time:"",notify:60},
+  Friday:{status:"Off",time:"",notify:60},
+  Saturday:{status:"Off",time:"",notify:60},
+};
 
-  days.forEach(day => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <label>${day} Start</label>
-      <input type="time" id="${day}_start">
+function save(){ localStorage.setItem("kaylaSchedule", JSON.stringify(schedule)); }
 
-      <label>${day} End</label>
-      <input type="time" id="${day}_end">
+/* ---------------- RENDER WEEK ---------------- */
+function renderWeek(){
+  const grid = document.getElementById("weekGrid");
+  grid.innerHTML = "";
+  days.forEach(d=>{
+    const card = document.createElement("div");
+    card.className="day-card";
+    card.onclick = () => toggleStatus(d);
+    card.innerHTML = `
+      <div class="day-name">${d}</div>
+      <div class="day-status">${schedule[d].status}</div>
     `;
-    container.appendChild(div);
-  });
-
-  loadWeeklyTemplate();
-}
-buildWeeklyTemplate();
-
-let dynamicShifts = JSON.parse(localStorage.getItem("dynamicShifts") || "[]");
-let reminderMinutes = parseInt(localStorage.getItem("reminderMinutes") || "60");
-
-function saveWeeklyTemplate() {
-  const schedule = {};
-
-  days.forEach(day => {
-    schedule[day] = {
-      start: document.getElementById(`${day}_start`).value,
-      end: document.getElementById(`${day}_end`).value
-    };
-  });
-
-  localStorage.setItem("weeklySchedule", JSON.stringify(schedule));
-  alert("Weekly schedule saved!");
-  scheduleNotifications();
-}
-
-function loadWeeklyTemplate() {
-  const saved = JSON.parse(localStorage.getItem("weeklySchedule") || "{}");
-
-  days.forEach(day => {
-    if (saved[day]) {
-      document.getElementById(`${day}_start`).value = saved[day].start || "";
-      document.getElementById(`${day}_end`).value = saved[day].end || "";
-    }
+    grid.appendChild(card);
   });
 }
 
-function addDynamicShift() {
-  const date = document.getElementById("dynDate").value;
-  const start = document.getElementById("dynStart").value;
-  const end = document.getElementById("dynEnd").value;
+/* --------------- RENDER DETAILS -------------- */
+function renderDetails(){
+  const list = document.getElementById("dayList");
+  const box = document.getElementById("scheduleBox");
 
-  if (!date || !start || !end) return alert("Fill all fields.");
+  list.innerHTML = days.map(d=>`<div class="list-day">${d}</div>`).join("");
 
-  dynamicShifts.push({ date, start, end });
-  localStorage.setItem("dynamicShifts", JSON.stringify(dynamicShifts));
-  renderDynamic();
-  scheduleNotifications();
-}
+  box.innerHTML = days.map(d=>{
+    return `
+      <div class="slot-row">
+        <div class="slot-name">${d}</div>
+        <input class="slot-time" id="time-${d}" value="${schedule[d].time}" placeholder="12pm - 5pm">
+        <select class="notify-control" id="notify-${d}">
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+        </select>
+        <button class="tiny-btn" onclick="saveDay('${d}')">Save</button>
+      </div>
+    `;
+  }).join("");
 
-function renderDynamic() {
-  const list = document.getElementById("dynamicList");
-  list.innerHTML = "";
-
-  dynamicShifts.forEach(s => {
-    const d = document.createElement("div");
-    d.classList.add("shift-item");
-    d.textContent = `${s.date}: ${s.start} → ${s.end}`;
-    list.appendChild(d);
+  days.forEach(d=>{
+    document.getElementById("notify-"+d).value = schedule[d].notify;
   });
 }
-renderDynamic();
 
-function updateReminder() {
-  const value = parseInt(document.getElementById("reminderTime").value);
-  reminderMinutes = value;
-  localStorage.setItem("reminderMinutes", value);
-  alert("Reminder time updated!");
-  scheduleNotifications();
+/* ---------------- Toggle Work/Off ---------------- */
+function toggleStatus(day){
+  schedule[day].status = schedule[day].status === "Work" ? "Off" : "Work";
+  save();
+  renderWeek();
 }
 
-async function requestNotifications() {
-  if (Notification.permission !== "granted") {
-    await Notification.requestPermission();
+/* ---------------- Save Day ---------------- */
+function saveDay(day){
+  const t = document.getElementById("time-"+day).value;
+  const n = parseInt(document.getElementById("notify-"+day).value);
+  schedule[day].time = t;
+  schedule[day].notify = n;
+  save();
+}
+
+/* ----------------- Notification Logic ----------------- */
+
+if (Notification && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+function convertTo24(t){
+  const parts = t.match(/(\d+)(?::(\d+))?\s*(am|pm)/i);
+  if(!parts) return null;
+
+  let hour = parseInt(parts[1]);
+  let minutes = parts[2] ? parseInt(parts[2]) : 0;
+  const mer = parts[3].toLowerCase();
+
+  if(mer==="pm" && hour!==12) hour+=12;
+  if(mer==="am" && hour===12) hour=0;
+
+  return {hour,minutes};
+}
+
+function parseTimeRange(str){
+  if(!str.includes("-")) return null;
+  let [start, end] = str.split("-");
+  return {
+    start: convertTo24(start.trim()),
+    end: convertTo24(end.trim())
+  };
+}
+
+let notifiedToday = false;
+
+function checkNotifications(){
+  const now = new Date();
+  const dayName = days[now.getDay()];
+  const config = schedule[dayName];
+
+  if(config.status !== "Work" || !config.time) return;
+
+  const parsed = parseTimeRange(config.time);
+  if(!parsed) return;
+
+  const notifyBefore = config.notify;
+
+  const start = new Date();
+  start.setHours(parsed.start.hour, parsed.start.minutes, 0, 0);
+
+  const diff = (start - now) / 1000 / 60;
+
+  if(diff > 0 && diff <= notifyBefore){
+    sendNotification(dayName, config.time);
   }
 }
-requestNotifications();
 
-function scheduleNotifications() {
-  if (Notification.permission !== "granted") return;
+function sendNotification(day, time){
+  if(notifiedToday) return;
 
-  navigator.serviceWorker.ready.then(reg => {
-    reg.active.postMessage({
-      action: "schedule",
-      weekly: JSON.parse(localStorage.getItem("weeklySchedule") || "{}"),
-      dynamic: dynamicShifts,
-      reminderMinutes
-    });
+  notifiedToday = true;
+  new Notification("Shift Reminder", {
+    body: `${day}: Your shift starts at ${time}`,
   });
 }
+
+// reset daily
+setInterval(()=>{
+  const now = new Date();
+  if(now.getHours()===0 && now.getMinutes()===0){
+    notifiedToday = false;
+  }
+}, 60000);
+
+// check every minute
+setInterval(checkNotifications, 60000);
+
+/* INIT */
+renderWeek();
+renderDetails();
