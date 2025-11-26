@@ -44,7 +44,7 @@ function notifyIfTime(startTime, title) {
   if (diff > 0 && diff < reminderMinutes + 1) {
     self.registration.showNotification(title, {
       body: `Shift begins at ${startTime}`,
-      icon: "/icon.png"
+      icon: "/Workschedule/icon.png"
     });
   }
 }
