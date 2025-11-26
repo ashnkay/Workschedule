@@ -8,8 +8,7 @@
   <!-- Quicksand font -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="manifest" href="manifest.json">
-  <script defer src="app.js"></script>
+  <link rel="manifest" href="/Workschedule/manifest.json">
 
   <style>
     body {
@@ -118,6 +117,14 @@
 
     <button onclick="updateReminder()">Save Reminder Time</button>
   </div>
+
+  <script src="/Workschedule/app.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/Workschedule/service-worker.js");
+    }
+  </script>
 
 </body>
 </html>
