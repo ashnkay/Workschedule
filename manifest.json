@@ -1,7 +1,8 @@
+231"}
 {
   "name": "Work Schedule",
   "short_name": "Schedule",
-  "description": "Kayla's work schedule app",
+  "description": "Kayla's interactive work schedule app",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
@@ -17,5 +18,3 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
-}
