@@ -1,6 +1,6 @@
 const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const topToggle = document.getElementById("top-toggle");
-const bottomRight = document.getElementById("bottom-right");
+const shiftInputs = document.getElementById("shift-inputs");
 
 // Load or initialize schedule
 let scheduleData = JSON.parse(localStorage.getItem("scheduleData")) || {};
@@ -24,7 +24,7 @@ daysOfWeek.forEach(day => {
   topToggle.appendChild(div);
 });
 
-// Bottom-right shift input list
+// Vertical shift inputs under the top row
 daysOfWeek.forEach(day => {
   const container = document.createElement("div");
   container.classList.add("shift-input");
@@ -56,7 +56,7 @@ daysOfWeek.forEach(day => {
   };
   container.appendChild(reminderInput);
 
-  bottomRight.appendChild(container);
+  shiftInputs.appendChild(container);
 });
 
 // Request Notification permission
