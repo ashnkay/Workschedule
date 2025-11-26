@@ -3,126 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Schedule</title>
-
+  <title>Kayla's Page</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="logo.png">
-
   <style>
     body {
       margin: 0;
-      font-family: "Baloo 2", cursive;
-      background: linear-gradient(180deg, #000, #2b2b2b);
-      color: #ffb6d5;
+      font-family: 'Baloo 2', cursive;
+      background: #fce4ec;
+      color: #333;
+    }
+    header {
       text-align: center;
-      padding: 20px;
+      padding: 2rem 1rem;
     }
-
-    h1 {
-      font-size: 48px;
-      font-weight: 700;
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
     }
-
-    .layout {
+    main {
+      padding: 2rem;
       display: flex;
-      gap: 20px;
       justify-content: center;
       align-items: flex-start;
-      margin-top: 20px;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
-
-    .side-logo img {
-      width: 180px;
-      border-radius: 10px;
-    }
-
-    .week-grid {
+    .gallery {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
     }
-
-    .day-box {
-      border: 2px solid #ffb6d5;
-      padding: 15px;
-      min-height: 80px;
-      border-radius: 10px;
-      background: rgba(255, 182, 213, 0.06);
+    .gallery-item {
+      position: relative;
+      cursor: pointer;
     }
-
-    .label {
-      font-size: 22px;
-      margin-bottom: 10px;
-      text-decoration: underline;
+    .gallery-item img, .gallery-item video {
+      width: 100%;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
     }
-
-    input[type="text"], input[type="number"] {
-      width: 85%;
-      padding: 5px;
-      border-radius: 6px;
-      border: none;
-      margin-top: 5px;
-      font-family: "Baloo 2";
-      background: #ffd3e7;
-      color: #000;
+    .gallery-item img:hover, .gallery-item video:hover {
+      transform: scale(1.05);
     }
-
-    .settings {
-      margin-top: 30px;
-      border: 2px solid #ffb6d5;
-      padding: 20px;
-      border-radius: 10px;
-      background: rgba(255, 182, 213, 0.06);
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+    .caption {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
     }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 20px;
-      border-radius: 10px;
-      border: none;
-      background: #ffb6d5;
-      color: #000;
-      font-family: "Baloo 2";
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f8bbd0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+    footer .logo {
+      height: 40px;
+    }
+    footer .credits {
+      font-size: 0.8rem;
+      color: #444;
     }
   </style>
 </head>
-
 <body>
 
-  <h1>Work Schedule</h1>
+  <header>
+    <h1>Kayla's Art Gallery</h1>
+    <p class="credits">Credit to ArtWithFlo</p>
+  </header>
 
-  <div class="layout">
-
-    <div class="side-logo">
-      <img src="logo.png" alt="Work Schedule Logo">
+  <main>
+    <div class="gallery">
+      <!-- Example artwork items -->
+      <div class="gallery-item">
+        <img src="Art1.png" alt="Artwork 1">
+        <div class="caption">Artwork 1 caption <a href="#">link</a></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Art2.png" alt="Artwork 2">
+        <div class="caption">Artwork 2 caption <a href="#">link</a></div>
+      </div>
+      <div class="gallery-item">
+        <video src="AnimatedArtwork.mp4" controls></video>
+        <div class="caption">Animated artwork caption <a href="#">link</a></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Art3.png" alt="Artwork 3">
+        <div class="caption">Artwork 3 caption <a href="#">link</a></div>
+      </div>
+      <!-- Add more gallery items as needed -->
     </div>
+  </main>
 
-    <div class="week-grid">
-      <div class="day-box"><div class="label">Sunday</div><input type="text" id="sun" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Monday</div><input type="text" id="mon" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Tuesday</div><input type="text" id="tue" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Wednesday</div><input type="text" id="wed" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Thursday</div><input type="text" id="thu" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Friday</div><input type="text" id="fri" placeholder="Off / Shift"></div>
-      <div class="day-box"><div class="label">Saturday</div><input type="text" id="sat" placeholder="Off / Shift"></div>
-    </div>
-
-  </div>
-
-  <div class="settings">
-    <h2>Shift Reminder</h2>
-    <label>Notify me before shift:</label>
-    <input type="number" id="notifyTime" min="5" value="60"> minutes
-  </div>
-
-  <button onclick="saveSchedule()">Save Schedule</button>
-
-  <script src="app.js"></script>
+  <footer>
+    <img src="logo.png" alt="Cute Logo" class="logo">
+    <div class="credits">© 2025 Kayla</div>
+  </footer>
 
 </body>
 </html>
