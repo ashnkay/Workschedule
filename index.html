@@ -1,116 +1,224 @@
-}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work Schedule</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
-<link rel="manifest" href="manifest.json">
-<style>
-  body {
-    margin: 0;
-    font-family: 'Baloo 2', cursive;
-    background: linear-gradient(135deg, #000000, #555555);
-    color: #ffb6c1;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-  #left-panel {
-    width: 150px;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-  }
-  #left-panel img {
-    max-width: 100%;
-    max-height: 50%; /* Halved logo */
-    object-fit: contain;
-  }
-  #right-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    overflow-y: auto;
-  }
-  #top-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 1rem;
-  }
-  .day-box {
-    padding: 10px 15px;
-    background: rgba(255,182,193,0.1);
-    border: 1px solid #ffb6c1;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    min-width: 60px;
-  }
-  .day-box.work {
-    background: #ffb6c1;
-    color: #000;
-    font-weight: bold;
-  }
-  #shift-inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .shift-input {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    background: rgba(0,0,0,0.2);
-    padding: 8px;
-    border-radius: 8px;
-  }
-  .shift-input input[type="time"], .shift-input input[type="number"] {
-    padding: 5px;
-    border-radius: 6px;
-    border: 1px solid #ffb6c1;
-    background: #000;
-    color: #ffb6c1;
-  }
-  .shift-input label {
-    font-size: 0.9rem;
-  }
-  button {
-    background: #ffb6c1;
-    color: #000;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Baloo 2', cursive;
-    font-weight: bold;
-    margin-top: 4px;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Work Schedule — Kayla</title>
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Baloo 2 -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#3a3a3a;
+      --bg2:#000000;
+      --pink:#ffc0dc; /* light pink */
+      --accent:#ffd9e8;
+      --card-bg:rgba(0,0,0,0.25);
+    }
+    html,body{height:100%;margin:0;font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+    body{
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--pink);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app {
+      max-width:940px;
+      width:100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.3));
+      border-radius:12px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      border: 2px solid rgba(255,182,193,0.06);
+    }
+
+    header {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    header img.logo {
+      width:72px;
+      height:72px;
+      object-fit:contain;
+      border-radius:10px;
+      border:3px solid rgba(255,182,193,0.12);
+      background:rgba(255,255,255,0.02);
+      padding:6px;
+    }
+
+    h1{
+      font-size:48px;
+      margin:0;
+      letter-spacing:1px;
+      color:var(--pink);
+      text-shadow: 0 4px 14px rgba(0,0,0,0.7);
+    }
+
+    .subtitle {
+      margin-top:6px;
+      font-size:14px;
+      color:var(--accent);
+    }
+
+    .schedule {
+      margin-top:18px;
+      border-top:3px solid rgba(255,182,193,0.08);
+      padding-top:14px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      color:var(--pink);
+    }
+    td, th{
+      padding:12px;
+      vertical-align:middle;
+      border-bottom:1px solid rgba(255,182,193,0.06);
+    }
+
+    .day {
+      font-weight:600;
+      width:18%;
+      font-size:18px;
+      color:var(--pink);
+    }
+
+    .controls {
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .time-range {
+      border:2px solid rgba(255,182,193,0.25);
+      padding:8px 12px;
+      border-radius:8px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      background:transparent;
+    }
+
+    input[type="time"]{
+      background:transparent;
+      border:none;
+      color:var(--pink);
+      font-family:"Baloo 2";
+      font-weight:600;
+      font-size:16px;
+      outline:none;
+      width:110px;
+    }
+
+    .off-btn {
+      padding:8px 12px;
+      border-radius:8px;
+      background:transparent;
+      border:2px solid rgba(255,182,193,0.25);
+      color:var(--pink);
+      cursor:pointer;
+      font-weight:700;
+      min-width:68px;
+    }
+
+    .off-btn.off {
+      background:rgba(255,182,193,0.08);
+    }
+
+    .reminder {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    select, button.save, button.clear {
+      padding:8px 12px;
+      border-radius:8px;
+      border:2px solid rgba(255,182,193,0.18);
+      background:transparent;
+      color:var(--pink);
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .row-note {
+      font-size:13px;
+      color:var(--accent);
+      margin-top:10px;
+    }
+
+    footer {
+      margin-top:16px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .notice { color:var(--accent); font-size:13px; }
+
+    .controls-right { display:flex; gap:8px; align-items:center; }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header>
+      <img src="logo2.png" alt="app label" class="logo">
+      <div>
+        <h1>Work Schedule</h1>
+        <div class="subtitle">Manage shifts • toggle OFF days • reminders (default 30 mins)</div>
+      </div>
+    </header>
 
-<div id="left-panel">
-  <img src="logo.png" alt="Logo">
-</div>
+    <div class="schedule">
+      <table id="schedule-table" role="table" aria-label="work schedule">
+        <thead style="display:none;"><tr><th>Day</th><th>Shift</th><th>Reminder</th></tr></thead>
+        <tbody></tbody>
+      </table>
 
-<div id="right-panel">
-  <div id="top-toggle"></div>
-  <div id="shift-inputs"></div>
-</div>
+      <div class="row-note">Tip: Set start & end times; click OFF to mark the day as not working. Reminders will be scheduled for shift start minus the selected value.</div>
 
-<script src="app.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker registered"))
-    .catch(err => console.error("SW registration failed:", err));
-}
-</script>
+      <footer>
+        <div class="notice">Icon: uses your uploaded <code>logo.png</code> / Label: <code>logo2.png</code></div>
+        <div class="controls-right">
+          <button class="save" id="save-btn">Save schedule</button>
+          <button class="clear" id="clear-btn">Clear all</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Register service worker and request notification permission
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').then(reg => {
+        console.log('SW registered', reg);
+      }).catch(err => console.warn('SW failed', err));
+    }
+
+    // Request notifications permission on first load (user-friendly prompt).
+    (async function askPerm(){
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'default') {
+        try {
+          const p = await Notification.requestPermission();
+          console.log('Notification permission:', p);
+        } catch(e){ console.warn(e); }
+      }
+    })();
+  </script>
 </body>
-</html
+</html>
