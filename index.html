@@ -11,45 +11,44 @@
   <!-- Baloo 2 -->
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
 
+  <meta name="theme-color" content="#000000">
+
   <style>
     :root{
-      --bg1:#3a3a3a;
+      --bg1:#3b3b3b;
       --bg2:#000000;
-      --pink:#ffc0dc; /* light pink */
+      --pink:#ffc0dc;
       --accent:#ffd9e8;
-      --card-bg:rgba(0,0,0,0.25);
     }
     html,body{height:100%;margin:0;font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
     body{
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
       color:var(--pink);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:24px;
+      padding:18px;
     }
 
     .app {
-      max-width:940px;
+      max-width:960px;
       width:100%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.3));
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.28));
       border-radius:12px;
-      padding:28px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      padding:26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       border: 2px solid rgba(255,182,193,0.06);
     }
 
     header {
       display:flex;
       align-items:center;
-      gap:16px;
-      margin-bottom:18px;
+      gap:14px;
+      margin-bottom:14px;
     }
     header img.logo {
-      width:72px;
-      height:72px;
+      width:68px;
+      height:68px;
       object-fit:contain;
       border-radius:10px;
       border:3px solid rgba(255,182,193,0.12);
@@ -58,23 +57,22 @@
     }
 
     h1{
-      font-size:48px;
+      font-size:46px;
       margin:0;
-      letter-spacing:1px;
       color:var(--pink);
       text-shadow: 0 4px 14px rgba(0,0,0,0.7);
     }
 
     .subtitle {
       margin-top:6px;
-      font-size:14px;
+      font-size:13px;
       color:var(--accent);
     }
 
     .schedule {
-      margin-top:18px;
+      margin-top:12px;
       border-top:3px solid rgba(255,182,193,0.08);
-      padding-top:14px;
+      padding-top:12px;
     }
 
     table{
@@ -83,14 +81,14 @@
       color:var(--pink);
     }
     td, th{
-      padding:12px;
+      padding:10px;
       vertical-align:middle;
       border-bottom:1px solid rgba(255,182,193,0.06);
     }
 
     .day {
-      font-weight:600;
-      width:18%;
+      font-weight:700;
+      width:20%;
       font-size:18px;
       color:var(--pink);
     }
@@ -102,7 +100,7 @@
     }
 
     .time-range {
-      border:2px solid rgba(255,182,193,0.25);
+      border:2px solid rgba(255,182,193,0.22);
       padding:8px 12px;
       border-radius:8px;
       display:inline-flex;
@@ -116,25 +114,25 @@
       border:none;
       color:var(--pink);
       font-family:"Baloo 2";
-      font-weight:600;
-      font-size:16px;
+      font-weight:700;
+      font-size:15px;
       outline:none;
-      width:110px;
+      width:100px;
     }
 
     .off-btn {
       padding:8px 12px;
       border-radius:8px;
       background:transparent;
-      border:2px solid rgba(255,182,193,0.25);
+      border:2px solid rgba(255,182,193,0.18);
       color:var(--pink);
       cursor:pointer;
-      font-weight:700;
-      min-width:68px;
+      font-weight:800;
+      min-width:74px;
     }
 
     .off-btn.off {
-      background:rgba(255,182,193,0.08);
+      background:rgba(255,182,193,0.06);
     }
 
     .reminder {
@@ -169,7 +167,11 @@
 
     .notice { color:var(--accent); font-size:13px; }
 
-    .controls-right { display:flex; gap:8px; align-items:center; }
+    @media (max-width:600px){
+      h1{font-size:36px;}
+      .day{font-size:16px;}
+      input[type="time"]{width:86px;}
+    }
   </style>
 </head>
 <body>
@@ -178,21 +180,20 @@
       <img src="logo2.png" alt="app label" class="logo">
       <div>
         <h1>Work Schedule</h1>
-        <div class="subtitle">Manage shifts • toggle OFF days • reminders (default 30 mins)</div>
+        <div class="subtitle">Edit shifts • toggle OFF • reminders default 30 mins</div>
       </div>
     </header>
 
     <div class="schedule">
       <table id="schedule-table" role="table" aria-label="work schedule">
-        <thead style="display:none;"><tr><th>Day</th><th>Shift</th><th>Reminder</th></tr></thead>
         <tbody></tbody>
       </table>
 
-      <div class="row-note">Tip: Set start & end times; click OFF to mark the day as not working. Reminders will be scheduled for shift start minus the selected value.</div>
+      <div class="row-note">Tip: Click OFF to mark day as not working. Reminders fire at "shift start minus selected minutes". Save to persist.</div>
 
       <footer>
-        <div class="notice">Icon: uses your uploaded <code>logo.png</code> / Label: <code>logo2.png</code></div>
-        <div class="controls-right">
+        <div class="notice">Make sure your <code>logo.png</code> & <code>logo2.png</code> are in repo root.</div>
+        <div>
           <button class="save" id="save-btn">Save schedule</button>
           <button class="clear" id="clear-btn">Clear all</button>
         </div>
@@ -202,14 +203,13 @@
 
   <script src="app.js"></script>
   <script>
-    // Register service worker and request notification permission
+    // Register SW
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').then(reg => {
-        console.log('SW registered', reg);
-      }).catch(err => console.warn('SW failed', err));
+      navigator.serviceWorker.register('./service-worker.js').then(reg => {
+        console.log('Service Worker registered', reg);
+      }).catch(err => console.warn('SW reg failed', err));
     }
 
-    // Request notifications permission on first load (user-friendly prompt).
     (async function askPerm(){
       if (!('Notification' in window)) return;
       if (Notification.permission === 'default') {
