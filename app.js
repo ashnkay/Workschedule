@@ -1,8 +1,7 @@
-/* app.js
-   Handles UI, saves schedule to localStorage, schedules reminders (while page is open).
-   Reminder scheduling: Uses serviceWorkerRegistration.showNotification() when available.
-   NOTE: This will reliably show notifications while the page (or service worker) is active.
-   For reliable background notifications when the browser is closed, you need server push (Push API).
+/* app.js — GitHub Pages ready
+   - Stores schedule in localStorage under 'workSchedule_v1'
+   - Schedules reminders while the site is active (setTimeout)
+   - Uses serviceWorkerRegistration.showNotification when possible
 */
 
 const DAYS = [
@@ -15,9 +14,8 @@ const DAYS = [
   {id:'sat', name:'Saturday'}
 ];
 
-const DEFAULT_REMINDER_MIN = 30; // default 30 minutes before shift start
-
-let scheduledTimers = []; // holds setTimeout ids so we can clear them if schedule changes
+const DEFAULT_REMINDER_MIN = 30;
+let scheduledTimers = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   buildTable();
@@ -48,13 +46,13 @@ function buildTable() {
     start.type = 'time';
     start.className = 'start';
     start.value = '';
+    const dash = document.createElement('span'); dash.textContent = '—';
     const end = document.createElement('input');
     end.type = 'time';
     end.className = 'end';
     end.value = '';
 
     timeWrap.appendChild(start);
-    const dash = document.createElement('span'); dash.textContent = ' — ';
     timeWrap.appendChild(dash);
     timeWrap.appendChild(end);
 
@@ -67,14 +65,14 @@ function buildTable() {
       const isOff = offBtn.classList.toggle('off');
       offBtn.textContent = isOff ? 'OFF' : 'ON';
       if (!isOff) {
-        // If turned ON set default times
-        start.value = '09:00';
-        end.value = '17:00';
+        // turned ON
+        if (!start.value) start.value = '09:00';
+        if (!end.value) end.value = '17:00';
       } else {
         start.value = '';
         end.value = '';
       }
-      scheduleAllReminders(); // update timers
+      scheduleAllReminders();
     });
 
     controls.appendChild(timeWrap);
@@ -171,44 +169,34 @@ function flashSaved() {
 }
 
 function scheduleAllReminders() {
-  // Clear previous timers
   for (const t of scheduledTimers) clearTimeout(t);
   scheduledTimers = [];
 
-  // For each day, compute next occurrence of that day, and schedule a reminder at (start - reminder)
   const raw = localStorage.getItem('workSchedule_v1');
   if (!raw) return;
   const data = JSON.parse(raw);
-
   const now = new Date();
+
   for (const [i,day] of DAYS.entries()) {
     const cfg = data[day.id];
     if (!cfg) continue;
     if (cfg.isOff) continue;
-    if (!cfg.start) continue; // no start time set
+    if (!cfg.start) continue;
 
-    // parse start time "HH:MM"
     const [h,m] = cfg.start.split(':').map(s => parseInt(s,10));
     if (isNaN(h)) continue;
 
-    // compute next date for this weekday
     const target = nextWeekdayDate(i, h, parseInt(m||0,10));
-
-    // compute reminder time
     const remMinutes = parseInt(cfg.rem || DEFAULT_REMINDER_MIN,10);
     const remindAt = new Date(target.getTime() - remMinutes * 60000);
 
-    // If remindAt already passed (e.g., schedule changed), schedule for next week
     if (remindAt <= now) {
-      // add 7 days
       remindAt.setTime(remindAt.getTime() + 7 * 24 * 60 * 60 * 1000);
     }
 
-    // schedule setTimeout
     const ms = remindAt.getTime() - now.getTime();
     const timerId = setTimeout(() => {
       showReminderNotification(day.name, cfg.start, cfg.end, remMinutes);
-      // After firing, schedule next week's reminder
       scheduleAllReminders();
     }, ms);
     scheduledTimers.push(timerId);
@@ -216,15 +204,13 @@ function scheduleAllReminders() {
   }
 }
 
-// helper: compute next date for weekday index (0=Sunday..6=Saturday)
 function nextWeekdayDate(weekdayIndex, hour=9, minute=0) {
   const now = new Date();
   const todayIndex = now.getDay();
   let diff = weekdayIndex - todayIndex;
   if (diff < 0) diff += 7;
-  // if diff === 0 and time earlier/later? We'll pick the next occurrence (today if later, else next week)
   const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
-  if (diff === 0 && d <= now) diff = 7; // if time already passed today
+  if (diff === 0 && d <= now) diff = 7;
   const target = new Date(d.getTime() + diff * 24 * 60 * 60 * 1000);
   return target;
 }
@@ -232,9 +218,8 @@ function nextWeekdayDate(weekdayIndex, hour=9, minute=0) {
 async function showReminderNotification(dayName, startTime, endTime, remMinutes) {
   const title = `Shift reminder — ${dayName}`;
   const body = `Shift ${startTime}${endTime ? ` - ${endTime}` : ''} starts in ${remMinutes} minutes.`;
-  const icon = 'logo.png';
+  const icon = './logo.png';
 
-  // If serviceWorker registration available, use it so notification comes from SW
   try {
     if (navigator.serviceWorker && navigator.serviceWorker.ready) {
       const reg = await navigator.serviceWorker.ready;
@@ -250,7 +235,6 @@ async function showReminderNotification(dayName, startTime, endTime, remMinutes)
     console.warn('service worker notify failed', err);
   }
 
-  // fallback to Notification API
   if (window.Notification && Notification.permission === 'granted') {
     new Notification(title, {body, icon});
   } else {
@@ -258,7 +242,7 @@ async function showReminderNotification(dayName, startTime, endTime, remMinutes)
   }
 }
 
-/* Auto-save on input changes so user doesn't lose edits */
+/* Auto-save after user stops typing */
 document.addEventListener('input', debounce(() => {
   saveSchedule();
 }, 700));
